@@ -212,6 +212,7 @@ struct rzil_op_seq_t {
  *  blk lbl data ctrl a labeled sequence of effects.
  */
 struct rzil_op_blk_t {
+	const char *lbl; ///< name of the label, const one
 	RzILOp *data_eff; ///< index of data_eff
 	RzILOp *ctrl_eff; ///< index of ctrl_eff
 };
@@ -220,11 +221,11 @@ struct rzil_op_blk_t {
  *  \struct rzil_op_repeat_t
  *  \brief op structure for `repeat` (bool -> data eff -> data eff)
  *
- *  repeat c data repeats data effects until the condition c holds.
+ *  repeat c data repeats data effects till the condition c holds.
  */
 struct rzil_op_repeat_t {
-	RzILOp *condition; ///< index of BOOL condition
-	RzILOp *data_eff; ///< index of data effect
+	RzILOp *c; ///< index of BOOL condition
+	RzILOp *data; ///< index of data effect
 };
 
 /**
@@ -511,7 +512,7 @@ RZ_API RZ_OWN RzILOp *rz_il_op_new_let(RZ_NONNULL const char *var, RZ_NONNULL Rz
 RZ_API RZ_OWN RzILOp *rz_il_op_new_jmp(RZ_NONNULL RzILOp *dst);
 RZ_API RZ_OWN RzILOp *rz_il_op_new_goto(RZ_NONNULL const char *label);
 RZ_API RZ_OWN RzILOp *rz_il_op_new_seq(RZ_NONNULL RzILOp *x, RZ_NONNULL RzILOp *y);
-RZ_API RZ_OWN RzILOp *rz_il_op_new_blk(RZ_NONNULL RzILOp *data_effect, RZ_NONNULL RzILOp *ctrl_effect);
+RZ_API RZ_OWN RzILOp *rz_il_op_new_blk(RZ_NONNULL const char *lbl, RZ_NONNULL RzILOp *data_effect, RZ_NONNULL RzILOp *ctrl_effect);
 RZ_API RZ_OWN RzILOp *rz_il_op_new_repeat(RZ_NONNULL RzILOp *condition, RZ_NONNULL RzILOp *data_effect);
 RZ_API RZ_OWN RzILOp *rz_il_op_new_branch(RZ_NONNULL RzILOp *condition, RZ_NULLABLE RzILOp *true_effect, RZ_NULLABLE RzILOp *false_effect);
 RZ_API RZ_OWN RzILOp *rz_il_op_new_load(int mem, RZ_NONNULL RzILOp *key);

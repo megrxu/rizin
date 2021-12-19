@@ -44,6 +44,8 @@ void *rz_il_handler_let(RzILVM *vm, RzILOp *op, RzILOpArgType *type);
 void *rz_il_handler_jmp(RzILVM *vm, RzILOp *op, RzILOpArgType *type);
 void *rz_il_handler_goto(RzILVM *vm, RzILOp *op, RzILOpArgType *type);
 void *rz_il_handler_seq(RzILVM *vm, RzILOp *op, RzILOpArgType *type);
+void *rz_il_handler_blk(RzILVM *vm, RzILOp *op, RzILOpArgType *type);
+void *rz_il_handler_repeat(RzILVM *vm, RzILOp *op, RzILOpArgType *type);
 void *rz_il_handler_branch(RzILVM *vm, RzILOp *op, RzILOpArgType *type);
 
 void *rz_il_handler_load(RzILVM *vm, RzILOp *op, RzILOpArgType *type);
@@ -92,8 +94,8 @@ static RzILOpHandler op_handler_table_default[RZIL_OP_MAX] = {
 	rz_il_handler_jmp, /* RZIL_OP_JMP */
 	rz_il_handler_goto, /* RZIL_OP_GOTO */
 	rz_il_handler_seq, /* RZIL_OP_SEQ */
-	rz_il_handler_unimplemented, // &rz_il_handler_blk, /* RZIL_OP_BLK */
-	rz_il_handler_unimplemented, // &rz_il_handler_repeat, /* RZIL_OP_REPEAT */
+	rz_il_handler_blk, /* RZIL_OP_BLK */
+	rz_il_handler_repeat, /* RZIL_OP_REPEAT */
 	rz_il_handler_branch, /* RZIL_OP_BRANCH */
 	rz_il_handler_unimplemented, // &rz_il_handler_invalid, /* RZIL_OP_INVALID */
 };

@@ -543,10 +543,10 @@ RZ_API RZ_OWN RzILOp *rz_il_op_new_seq(RZ_NONNULL RzILOp *x, RZ_NONNULL RzILOp *
  *
  *  blk lbl data ctrl a labeled sequence of effects.
  */
-RZ_API RZ_OWN RzILOp *rz_il_op_new_blk(RZ_NONNULL RzILOp *data_eff, RZ_NONNULL RzILOp *ctrl_eff) {
+RZ_API RZ_OWN RzILOp *rz_il_op_new_blk(RZ_NONNULL const char *lbl, RZ_NONNULL RzILOp *data_eff, RZ_NONNULL RzILOp *ctrl_eff) {
 	rz_return_val_if_fail(data_eff && ctrl_eff, NULL);
 	RzILOp *ret;
-	rz_il_op_new_2(RZIL_OP_BLK, RzILOpBlk, blk, data_eff, ctrl_eff);
+	rz_il_op_new_3(RZIL_OP_BLK, RzILOpBlk, blk, lbl, data_eff, ctrl_eff);
 	return ret;
 }
 
@@ -555,10 +555,10 @@ RZ_API RZ_OWN RzILOp *rz_il_op_new_blk(RZ_NONNULL RzILOp *data_eff, RZ_NONNULL R
  *
  *  repeat c data repeats data effects until the condition c holds.
  */
-RZ_API RZ_OWN RzILOp *rz_il_op_new_repeat(RZ_NONNULL RzILOp *condition, RZ_NONNULL RzILOp *data_eff) {
-	rz_return_val_if_fail(condition && data_eff, NULL);
+RZ_API RZ_OWN RzILOp *rz_il_op_new_repeat(RZ_NONNULL RzILOp *c, RZ_NONNULL RzILOp *data) {
+	rz_return_val_if_fail(c && data, NULL);
 	RzILOp *ret;
-	rz_il_op_new_2(RZIL_OP_REPEAT, RzILOpRepeat, repeat, condition, data_eff);
+	rz_il_op_new_2(RZIL_OP_REPEAT, RzILOpRepeat, repeat, c, data);
 	return ret;
 }
 
@@ -750,7 +750,7 @@ RZ_API void rz_il_op_free(RZ_NULLABLE RzILOp *op) {
 		rz_il_op_free_2(blk, data_eff, ctrl_eff);
 		break;
 	case RZIL_OP_REPEAT:
-		rz_il_op_free_2(repeat, condition, data_eff);
+		rz_il_op_free_2(repeat, c, data);
 		break;
 	case RZIL_OP_BRANCH:
 		rz_il_op_free_3(branch, condition, true_eff, false_eff);

@@ -231,7 +231,45 @@ void *rz_il_handler_seq(RzILVM *vm, RzILOp *op, RzILOpArgType *type) {
 	RzILEffect *eff_uni = eff_x;
 	eff_uni->next_eff = eff_y;
 
+	*type = RZIL_OP_ARG_EFF;
 	return eff_uni;
+}
+
+void *rz_il_handler_blk(RzILVM *vm, RzILOp *op, RzILOpArgType *type) {
+	rz_return_val_if_fail(vm && op && type, NULL);
+
+	RzILOpBlk *op_blk = op->op.blk;
+
+	if (op_blk->lbl) {
+		rz_il_vm_create_label(vm, op_blk->lbl, vm->pc); // create the label if `blk` is labelled
+	}
+
+	RzILEffect *eff_data = rz_il_evaluate_effect(vm, op_blk->data_eff, type);
+	RzILEffect *eff_ctrl = rz_il_evaluate_effect(vm, op_blk->ctrl_eff, type);
+	RzILEffect *eff_blk = eff_data;
+	eff_blk->next_eff = eff_ctrl;
+
+	*type = RZIL_OP_ARG_EFF;
+	return eff_blk;
+}
+
+void *rz_il_handler_repeat(RzILVM *vm, RzILOp *op, RzILOpArgType *type) {
+	rz_return_val_if_fail(vm && op && type, NULL);
+
+	RzILOpRepeat *op_repeat = op->op.repeat;
+
+	RzILEffect *data_eff = rz_il_evaluate_effect(vm, op, type);
+	RzILBool *condition;
+	while ((condition = rz_il_evaluate_bool(vm, op_repeat->c, type))) {
+		if (!condition->b) {
+			break;
+		}
+		rz_il_perform_data(vm, data_eff);
+		rz_il_bool_free(condition);
+	}
+	rz_il_bool_free(condition);
+
+	return NULL;
 }
 
 void *rz_il_handler_branch(RzILVM *vm, RzILOp *op, RzILOpArgType *type) {

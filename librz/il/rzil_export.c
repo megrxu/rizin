@@ -410,11 +410,26 @@ static void il_opdmp_seq(RzILOp *op, RzStrBuf *sb, PJ *pj) {
 }
 
 static void il_opdmp_blk(RzILOp *op, RzStrBuf *sb, PJ *pj) {
-	il_op_unimplemented("blk");
+	RzILOpBlk *opx = op->op.blk;
+	if (sb) {
+		rz_strbuf_appendf(sb, "blk(lbl:%s, data:", opx->lbl);
+		il_op_resolve(opx->data_eff, sb, pj);
+		rz_strbuf_append(sb, ", ctrl:");
+		il_op_resolve(opx->ctrl_eff, sb, pj);
+		rz_strbuf_append(sb, ")");
+	} else {
+		pj_o(pj);
+		pj_ks(pj, "label", opx->lbl);
+		pj_k(pj, "data");
+		il_op_resolve(opx->data_eff, sb, pj);
+		pj_k(pj, "ctrl");
+		il_op_resolve(opx->ctrl_eff, sb, pj);
+		pj_end(pj);
+	}
 }
 
 static void il_opdmp_repeat(RzILOp *op, RzStrBuf *sb, PJ *pj) {
-	il_op_unimplemented("repeat");
+	il_op_param_2("repeat", op->op.repeat, c, data);
 }
 
 static void il_opdmp_branch(RzILOp *op, RzStrBuf *sb, PJ *pj) {
