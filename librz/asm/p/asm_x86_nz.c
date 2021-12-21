@@ -539,6 +539,7 @@ static int process_1byte_op(RzAsm *a, ut8 *data, const Opcode *op, int op1) {
 		op->operands[1].regs[0] == X86R_EBP) {
 		// reg += 8;
 		ebp_reg = 1;
+		mod_byte = 1;
 	}
 	data[l++] = mod_byte << 6 | reg << 3 | rm;
 
